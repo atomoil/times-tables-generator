@@ -4,6 +4,75 @@
 	<title>Times Tables Generator</title>
 </head>
 <body>
-Times Tables Generator will go here.
+Times Tables Generator
+<div id="tablesGoHere">
+</div>
+
+<script type="text/javascript">
+	
+
+function optionsForLevel(level) {
+	if (level == 1) {
+		return {total: 10, timesTables:[2], highestMultiplier: 10}
+	} else if (level == 2) {
+		return {total: 15, timesTables:[2, 10], highestMultiplier: 10}
+	} else if (level == 3) {
+		return {total: 20, timesTables:[2, 5, 10], highestMultiplier: 10}
+	} else if (level == 4) {
+		return {total: 25, timesTables:[2, 4, 5, 10], highestMultiplier: 10}
+	} else if (level == 5) {
+		return {total: 30, timesTables:[2, 4, 5, 8, 10], highestMultiplier: 11}
+	}
+}
+
+function generateTimesTables(options) {
+	var total = options.total
+	var timesTables = options.timesTables
+	var highestMultiplier = options.highestMultiplier
+
+	var timesTablesArray = []
+	for(var i=0; i < total; i++) {
+		var table = randomItemIn(timesTables)
+		var multiplier = randomNumberUpTo(highestMultiplier)
+		timesTablesArray.push({left: table, right: multiplier})
+	}
+	return timesTablesArray
+}
+
+function displayTimesTables(timesTables) {
+	console.log(timesTables)
+	var container = document.getElementById("tablesGoHere")
+	console.log(container)
+	for(var i=0; i < timesTables.length; i++) {
+		var sum = timesTables[i]
+		// create something so we can see the sum
+		var element = document.createElement("div")
+		element.innerText = sum.left + " x " + sum.right + " ="
+		// add the sum to the container 
+		container.appendChild(element)
+	}
+}
+
+function randomItemIn(items) {
+	var item = items[Math.floor(Math.random() * items.length)]
+	return item
+}
+
+// BUG: 
+function randomNumberUpTo(number) {
+	return Math.round(number * Math.random())
+}
+
+
+window.onload = function() {
+	var options = optionsForLevel(2)
+	var tables = generateTimesTables(options)
+	displayTimesTables(tables)
+}
+
+
+// level 1 - 
+
+</script>
 </body>
 </html>
