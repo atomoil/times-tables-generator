@@ -5,23 +5,50 @@
 </head>
 <body>
 Times Tables Generator
-<div id="tablesGoHere">
-</div>
+<div id="chooseLevel"></div>
+<div id="tablesGoHere"></div>
 
 <script type="text/javascript">
-	
+
+function generateLevelChoices() {
+	var container = document.getElementById("tablesGoHere")
+	for( var i=1; i <= 11; i += 1) {
+		var element = document.createElement("div")
+		element.innerHTML = "<a href='javascript:startLevel("+i+")'>Level" + i + "</a><br />"
+		container.appendChild(element)
+	}
+}
+
+function startLevel(level) {
+	console.log("start level " + level)
+	var options = optionsForLevel(level)
+	var tables = generateTimesTables(options)
+	displayTimesTables(tables)
+}
 
 function optionsForLevel(level) {
 	if (level == 1) {
-		return {total: 10, timesTables:[2], highestMultiplier: 10}
+		return {total: 10, timesTables:[2], highestMultiplier: 10, lowestMultiplier: 1}
 	} else if (level == 2) {
-		return {total: 15, timesTables:[2, 10], highestMultiplier: 10}
+		return {total: 15, timesTables:[2, 10], highestMultiplier: 10, lowestMultiplier: 1}
 	} else if (level == 3) {
-		return {total: 20, timesTables:[2, 5, 10], highestMultiplier: 10}
+		return {total: 20, timesTables:[2, 5, 10], highestMultiplier: 10, lowestMultiplier: 1}
 	} else if (level == 4) {
-		return {total: 25, timesTables:[2, 4, 5, 10], highestMultiplier: 10}
+		return {total: 25, timesTables:[2, 4, 5, 10], highestMultiplier: 10, lowestMultiplier: 1}
 	} else if (level == 5) {
-		return {total: 30, timesTables:[2, 4, 5, 8, 10], highestMultiplier: 11}
+		return {total: 30, timesTables:[2, 4, 5, 8, 10], highestMultiplier: 11, lowestMultiplier: 1}
+	} else if (level == 6) {
+		return {total: 35, timesTables:[2, 3, 4, 5, 8, 10], highestMultiplier: 12, lowestMultiplier: 1}
+	} else if (level == 7) {
+		return {total: 40, timesTables:[2, 3, 4, 5, 6, 8, 10], highestMultiplier: 12, lowestMultiplier: 1}
+	} else if (level == 8) {
+		return {total: 45, timesTables:[2, 3, 4, 5, 6, 8, 9, 10], highestMultiplier: 12, lowestMultiplier: 1}
+	} else if (level == 9) {
+		return {total: 50, timesTables:[2, 3, 4, 5, 6, 7, 8, 9, 10], highestMultiplier: 12, lowestMultiplier: 1}
+	} else if (level == 10) {
+		return {total: 100, timesTables:[2, 3, 4, 5, 6, 7, 8, 9, 10], highestMultiplier: 12, lowestMultiplier: 1}
+	} else if (level == 11) {
+		return {total: 60, timesTables:[2, 3, 4, 5, 6, 7, 8, 9, 10, 11], highestMultiplier: 12, lowestMultiplier: 0}
 	}
 }
 
@@ -42,7 +69,6 @@ function generateTimesTables(options) {
 function displayTimesTables(timesTables) {
 	console.log(timesTables)
 	var container = document.getElementById("tablesGoHere")
-	console.log(container)
 	for(var i=0; i < timesTables.length; i++) {
 		var sum = timesTables[i]
 		// create something so we can see the sum
@@ -65,9 +91,12 @@ function randomNumberUpTo(number) {
 
 
 window.onload = function() {
+	generateLevelChoices()
+	/*
 	var options = optionsForLevel(2)
 	var tables = generateTimesTables(options)
 	displayTimesTables(tables)
+	*/
 }
 
 
