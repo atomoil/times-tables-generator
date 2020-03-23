@@ -5,22 +5,57 @@
 </head>
 <body>
 Times Tables Generator
-<div id="chooseLevel"></div>
-<div id="tablesGoHere"></div>
+<template id="chooseLevelContainerTemplate">
+<h2>Choose a Level</h2>
+<div id="levelOptions"></div>
+</template>
+
+<template id="chooseLevelItem">
+<a id="link" level="1" href="#" onClick="startLevel(this.attributes.level)"></a><br />
+</template>
+
+<template id="answerQuestionsTemplate">
+<h2>Answer Questions</h2>
+<div>[Timer goes here]</div>
+<div id="questions"></div>
+<a href="#" onClick="generateLevelChoices()">Go back to menu</a>
+</template>
+
+<template id="questionTemplate">
+<div id="question"></div>
+</template>
+
+<div id="container">
+</div>
 
 <script type="text/javascript">
 
 function generateLevelChoices() {
-	var container = document.getElementById("tablesGoHere")
+	clearContainer()
+
+	var container = document.getElementById("container")
+
+	var chooseLevelContainer = document.getElementById("chooseLevelContainerTemplate").content.cloneNode(true)
+    var levelsGoHere = chooseLevelContainer.getElementById("levelOptions")
+	var chooseLevelItem = document.getElementById("chooseLevelItem").content
+
 	for( var i=1; i <= 11; i += 1) {
-		var element = document.createElement("div")
-		element.innerHTML = "<a href='javascript:startLevel("+i+")'>Level" + i + "</a><br />"
-		container.appendChild(element)
+		var element = chooseLevelItem.cloneNode(true)
+        element.getElementById("link").attributes.level = i
+		element.getElementById("link").innerText = "Level " + i // could also do `Level ${i}`
+		levelsGoHere.appendChild(element)
 	}
+    container.appendChild(chooseLevelContainer)
+}
+
+function clearContainer() {
+    var container = document.getElementById("container")
+    container.innerHTML = ""
 }
 
 function startLevel(level) {
 	console.log("start level " + level)
+    clearContainer()
 	var options = optionsForLevel(level)
 	var tables = generateTimesTables(options)
 	displayTimesTables(tables)
@@ -68,15 +103,23 @@ function generateTimesTables(options) {
 
 function displayTimesTables(timesTables) {
 	console.log(timesTables)
-	var container = document.getElementById("tablesGoHere")
+	var container = document.getElementById("container")
+    var answerQuestionsContainer = document.getElementById("answerQuestionsTemplate").content.cloneNode(true)
+    var questionsGoHere = answerQuestionsContainer.getElementById("questions")
+    var question = document.getElementById("questionTemplate").content
+
 	for(var i=0; i < timesTables.length; i++) {
 		var sum = timesTables[i]
 		// create something so we can see the sum
-		var element = document.createElement("div")
-		element.innerText = sum.left + " x " + sum.right + " ="
+
+        var element = question.cloneNode(true)
+		element.getElementById("question").innerText = sum.left + " x " + sum.right + " ="
 		// add the sum to the container 
-		container.appendChild(element)
+		questionsGoHere.appendChild(element)
 	}
+
+    container.appendChild(answerQuestionsContainer)
+    
 }
 
 function randomItemIn(items) {
