@@ -15,14 +15,20 @@ Times Tables Generator
 </template>
 
 <template id="answerQuestionsTemplate">
-<h2>Answer Questions</h2>
-<div>[Timer goes here]</div>
-<div id="questions"></div>
-<a href="#" onClick="generateLevelChoices()">Go back to menu</a>
+	<h2>Answer Questions</h2>
+	<div>[Timer goes here]</div>
+	<form id="form">
+		<div id="questions"></div>
+		<input type="submit" onClick="checkAnswers()" value="Check Answers"/>
+	</form>
+	<div id="finalAnswer"></div>
+	<a href="#" onClick="generateLevelChoices()">Go back to menu</a>
 </template>
 
 <template id="questionTemplate">
-<div id="question"></div>
+	<div id="question_">
+		<span id="question"></span><input type="number" id="answer" /><span id="result"></span>
+	</div>
 </template>
 
 <div id="container">
@@ -113,13 +119,34 @@ function displayTimesTables(timesTables) {
 		// create something so we can see the sum
 
         var element = question.cloneNode(true)
-		element.getElementById("question").innerText = sum.left + " x " + sum.right + " ="
+        element.getElementById("question_").id = "question_" + i
+		element.getElementById("question").innerText = `${i+1}) ${sum.left} x ${sum.right} =`
 		// add the sum to the container 
 		questionsGoHere.appendChild(element)
+
 	}
 
     container.appendChild(answerQuestionsContainer)
-    
+    window.timesTables = timesTables
+}
+
+function checkAnswers() {
+	var timesTables = window.timesTables
+	var totalCorrectAnswers = 0
+	for(var i=0; i<timesTables.length; i++) {
+		var question = timesTables[i]
+		var correctAnswer = question.left * question.right
+		var questionNode = document.getElementById("question_"+i)
+		var answer = questionNode.querySelector("#answer").value
+		console.log(`the answer to question ${i+1} is ${answer} `)
+		if (answer != "" && answer == correctAnswer) {
+			questionNode.querySelector("#result").innerText = "CORRECT"
+			totalCorrectAnswers += 1
+		} else {
+			questionNode.querySelector("#result").innerText = "X"
+		}
+	}
+	document.querySelector("#finalAnswer").innerText = `You scored ${totalCorrectAnswers} out of ${timesTables.length}`
 }
 
 function randomItemIn(items) {
