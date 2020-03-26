@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
-<meta charset="UTF-8">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Times Tables Generator</title>
 </head>
 <body>
@@ -27,7 +28,7 @@ Times Tables Generator
 
 <template id="questionTemplate">
 	<div id="question_">
-		<span id="question"></span><input type="number" id="answer" /><span id="result"></span>
+		<span id="question"></span><input type="number" id="answer" tabindex=1 enterkeyhint="next" /><span id="result"></span>
 	</div>
 </template>
 
@@ -123,6 +124,7 @@ function displayTimesTables(timesTables) {
         var element = question.cloneNode(true)
         element.getElementById("question_").id = "question_" + i
 		element.getElementById("question").innerText = `${i+1}) ${sum.left} x ${sum.right} =`
+		element.getElementById("answer").tabIndex = (i+1)
 		// add the sum to the container 
 		questionsGoHere.appendChild(element)
 
