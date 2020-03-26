@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<meta charset="UTF-8">
 <head>
 	<title>Times Tables Generator</title>
 </head>
@@ -16,13 +17,12 @@ Times Tables Generator
 
 <template id="answerQuestionsTemplate">
 	<h2>Answer Questions</h2>
-	<div>[Timer goes here]</div>
+	<div id="timer">[Timer goes here]</div>
+	<div id="finalAnswer"></div>
 	<form id="form">
 		<div id="questions"></div>
-		<input type="submit" onClick="checkAnswers()" value="Check Answers"/>
 	</form>
-	<div id="finalAnswer"></div>
-	<a href="#" onClick="generateLevelChoices()">Go back to menu</a>
+	<a id="backToMenu" href="#" onClick="generateLevelChoices()">Go back to menu</a>
 </template>
 
 <template id="questionTemplate">
@@ -91,17 +91,19 @@ function optionsForLevel(level) {
 	} else if (level == 11) {
 		return {total: 60, timesTables:[2, 3, 4, 5, 6, 7, 8, 9, 10, 11], highestMultiplier: 12, lowestMultiplier: 0}
 	}
+	// ÷
 }
 
 function generateTimesTables(options) {
 	var total = options.total
 	var timesTables = options.timesTables
+	var lowestMultiplier = options.lowestMultiplier
 	var highestMultiplier = options.highestMultiplier
 
 	var timesTablesArray = []
 	for(var i=0; i < total; i++) {
 		var table = randomItemIn(timesTables)
-		var multiplier = randomNumberUpTo(highestMultiplier)
+		var multiplier = randomNumberUpTo(lowestMultiplier, highestMultiplier)
 		timesTablesArray.push({left: table, right: multiplier})
 	}
 	return timesTablesArray
@@ -128,6 +130,8 @@ function displayTimesTables(timesTables) {
 
     container.appendChild(answerQuestionsContainer)
     window.timesTables = timesTables
+    startCountdownTimer()
+	document.querySelector("#backToMenu").style.display = "none"
 }
 
 function checkAnswers() {
@@ -137,16 +141,19 @@ function checkAnswers() {
 		var question = timesTables[i]
 		var correctAnswer = question.left * question.right
 		var questionNode = document.getElementById("question_"+i)
-		var answer = questionNode.querySelector("#answer").value
+		var answerNode = questionNode.querySelector("#answer")
+		answerNode.disabled = true
+		var answer = answerNode.value
 		console.log(`the answer to question ${i+1} is ${answer} `)
 		if (answer != "" && answer == correctAnswer) {
-			questionNode.querySelector("#result").innerText = "CORRECT"
+			questionNode.querySelector("#result").innerText = "✅"
 			totalCorrectAnswers += 1
 		} else {
-			questionNode.querySelector("#result").innerText = "X"
+			questionNode.querySelector("#result").innerText = "❌"
 		}
 	}
 	document.querySelector("#finalAnswer").innerText = `You scored ${totalCorrectAnswers} out of ${timesTables.length}`
+	document.querySelector("#backToMenu").style.display = "block"
 }
 
 function randomItemIn(items) {
@@ -155,8 +162,42 @@ function randomItemIn(items) {
 }
 
 // BUG: 
-function randomNumberUpTo(number) {
-	return Math.round(number * Math.random())
+function randomNumberUpTo(lowest, highest) {
+	let diff = highest - lowest
+	return lowest + Math.round(diff * Math.random())
+}
+
+function startCountdownTimer() {
+	// get the end time (aka now + 3 minutes)
+	let endtime = Date.now() + (1000 * 60 * 3)
+	document.querySelector("#timer").innerText = "GO!"
+	// update the timer straight away!
+	let timeRemaining = getTimeRemaining(endtime)
+	document.querySelector("#timer").innerText = `${timeRemaining.minutes}m ${timeRemaining.seconds}s`
+		
+	let timeInterval = setInterval(function(){
+		let timeRemaining = getTimeRemaining(endtime)
+		// update something on screen
+		document.querySelector("#timer").innerText = `${timeRemaining.minutes}m ${timeRemaining.seconds}s`
+		// check if there is no time left, and STOP THE TEST
+		if (timeRemaining.total <= 0) {
+			document.querySelector("#timer").innerText = `Time's up!`
+			checkAnswers()
+			clearInterval(timeInterval)
+		}
+
+	}, 1000)
+}
+
+function getTimeRemaining(endtime){
+  var t = endtime - Date.now()
+  var seconds = Math.floor( (t/1000) % 60 )
+  var minutes = Math.floor( (t/1000/60) % 60 )
+  return {
+    'total': t,
+    'minutes': minutes,
+    'seconds': seconds
+  };
 }
 
 
