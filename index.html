@@ -14,6 +14,10 @@ body {
 	background: #fff;
 }
 
+#checkAnswerButton {
+	margin-bottom: 50px;
+}
+
 .sticky {
   position: fixed;
   top: 0;
@@ -42,7 +46,7 @@ Times Tables Generator
 	</div>
 	<form id="form">
 		<div id="questions"></div>
-		<input type="submit" onClick="checkAnswers()" value="Check Answers"/>
+		<input id="checkAnswerButton" type="submit" onClick="checkAnswers()" value="Check Answers"/>
 	</form>
 </template>
 
