@@ -5,23 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Times Tables Generator</title>
 <style>
+	
 body {
 	font-family: Verdana;
-}
-
-#header {
-	padding: 10px 16px;
-	background: #fff;
 }
 
 #checkAnswerButton {
 	margin-bottom: 50px;
 }
 
-.sticky {
-  position: fixed;
-  top: 0;
-  width: 100%
+.title {
+	margin-bottom: 6px;
+	margin-top: 15px;
+}
+
+.header {
+	position: fixed;
+	padding-left: 20px;
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 999;
+	height: 95px;
+	background: #fff;
+}
+
+.content {
+	padding-top: 65px;
+}
+
+#number {
+	display: inline-block;
+	width: 32px;
+	height: 30px;
+	text-align: right;
+}
+
+#question {
+	display: inline-block;
+	width: 90px;
+	padding-left: 10px;
+	text-align: left;
+}
+
+#answer {
+	width: 40px;
+}
+
+#backToMenu {
+	font-size: 12px;
+	padding-bottom: 8px;
+	padding-left: 15px;
+	display: inline-block;
 }
 
 </style>
@@ -38,21 +73,23 @@ Times Tables Generator
 </template>
 
 <template id="answerQuestionsTemplate">
-	<a href="#" onClick="goBackToMenu()">Go back to menu</a>
-	<h2 id="title">Answer Questions</h2>
-	<div id="header">
+	<div id="header" class="header">
+		<h2 id="title" class="title">Level X</h2>
 		<div id="timer">[Timer goes here]</div>
 		<div id="finalAnswer"></div>
 	</div>
-	<form id="form">
-		<div id="questions"></div>
-		<input id="checkAnswerButton" type="submit" onClick="checkAnswers()" value="Check Answers"/>
-	</form>
+	<div class="content">
+		<a href="#" id="backToMenu" onClick="goBackToMenu()">Go back to menu</a>
+		<form id="form">
+			<div id="questions"></div>
+			<button id="checkAnswerButton" type="button" onClick="checkAnswers()">Check Answers</button>
+		</form>
+	</div>
 </template>
 
 <template id="questionTemplate">
 	<div id="question_">
-		<span id="question"></span><input type="tel" id="answer" tabindex=1 enterkeyhint="next" /><span id="result"></span>
+		<span id="number"></span><span id="question"></span><input type="tel" id="answer" tabindex=1 enterkeyhint="next" /><span id="result"></span>
 	</div>
 </template>
 
@@ -148,7 +185,8 @@ function displayTimesTables(timesTables) {
 
         var element = question.cloneNode(true)
         element.getElementById("question_").id = "question_" + i
-		element.getElementById("question").innerText = `${i+1}) ${sum.left} x ${sum.right} =`
+        element.getElementById("number").innerText = `${i+1}.`
+		element.getElementById("question").innerText = `${sum.left} x ${sum.right} =`
 		element.getElementById("answer").tabIndex = (i+1)
 		// add the sum to the container 
 		questionsGoHere.appendChild(element)
@@ -158,7 +196,7 @@ function displayTimesTables(timesTables) {
     container.appendChild(answerQuestionsContainer)
     window.timesTables = timesTables
     startCountdownTimer()
-    window.onscroll = function(){ makeHeaderSticky() }
+    
 }
 
 function checkAnswers() {
@@ -179,6 +217,7 @@ function checkAnswers() {
 			questionNode.querySelector("#result").innerText = "❌"
 		}
 	}
+	document.querySelector("#checkAnswerButton").style.display = "none"
 	document.querySelector("#finalAnswer").innerText = `You scored ${totalCorrectAnswers} out of ${timesTables.length}`
 }
 
@@ -240,17 +279,6 @@ function getTimeRemaining(endtime){
     'seconds': seconds
   };
 }
-
-function makeHeaderSticky() {
-	let header = document.getElementById("header")
-	let sticky = header.offsetTop
-	if (window.pageYOffset > sticky) {
-    	header.classList.add("sticky");
-	} else {
-		header.classList.remove("sticky");
-	}
-}
-
 
 window.onload = function() {
 	generateLevelChoices()
